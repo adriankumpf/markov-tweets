@@ -1,5 +1,7 @@
 defmodule MarkovTweets.Generator do
 
+  @punctuation [?., ?,, ?!, ??, ?:]
+
   def built(chain) do
     start_seq = chain
                 |> Map.keys
@@ -22,8 +24,13 @@ defmodule MarkovTweets.Generator do
                   |> Tuple.delete_at(0)
                   |> Tuple.append(term)
 
-        built(chain, new_seq, acc ++ [[" "], term])
+        built(chain, new_seq, acc ++ add_space(term))
     end
   end
+
+  def add_space([<< t::utf8 >>] = term) when t in @punctuation do
+    [term]
+  end
+  def add_space(term), do: [[" "], term]
 
 end

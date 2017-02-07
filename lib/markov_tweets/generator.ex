@@ -1,8 +1,7 @@
 defmodule MarkovTweets.Generator do
 
-  @max_char_count 130
+  @max_char_count 140
   @punctuation [?., ?,, ?!, ??, ?:]
-  @ellipsis [".", ".", "."]
 
   def built(chain) do
     start_seq = chain
@@ -17,8 +16,8 @@ defmodule MarkovTweets.Generator do
     built(chain, start_seq, start_acc, char_count)
   end
 
-  def built(_, _, acc, char_count) when char_count > @max_char_count do
-    acc ++ @ellipsis
+  def built(chain, _, _, char_count) when char_count > @max_char_count do
+    built(chain)
   end
   def built(chain, seq, acc, char_count) do
     case chain[seq] do

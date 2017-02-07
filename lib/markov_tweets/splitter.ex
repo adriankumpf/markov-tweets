@@ -18,6 +18,9 @@ defmodule MarkovTweets.Splitter do
   def tokenize(<< ?\s::utf8, rest::binary >>, word, acc) do
     tokenize(rest, @empty_word, add_word(acc, word))
   end
+  def tokenize(<< ?\"::utf8, rest::binary >>, word, acc) do
+    tokenize(rest, word,  acc)
+  end
   def tokenize(<< c::utf8, rest::binary >>, word, acc) do
     tokenize(rest, word ++ [<< c >>], acc)
   end

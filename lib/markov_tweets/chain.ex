@@ -23,7 +23,14 @@ defmodule MarkovTweets.Chain do
   #############
 
   def init(order) do
-    chain = File.stream!("./dumps/realDonaldTrump.txt")
+    source = File.stream!("./dumps/realdonaldtrump.csv")
+             |> CSV.decode(headers: true, strip_cells: true)
+             |> Stream.filter(fn %{"text" => text, "is_retweet" => is_retweet} ->
+               is_retweet == "False" && !String.match?(text, ~r/^"?@/)
+             end)
+             |> Stream.map(fn %{"text" => text} -> text end)
+
+    chain = source
             |> Stream.map(&create_subchain(&1, order))
             |> merge
 

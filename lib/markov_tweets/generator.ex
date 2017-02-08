@@ -22,7 +22,9 @@ defmodule MarkovTweets.Generator do
   def built(chain, seq, acc, char_count) do
     case chain[seq] do
       nil ->
-        List.delete_at(acc, -1) # delete :end token
+        acc
+        |> List.flatten
+        |> Enum.filter(&String.valid?/1)
       edges ->
         term = Enum.random(edges)
         new_seq = seq

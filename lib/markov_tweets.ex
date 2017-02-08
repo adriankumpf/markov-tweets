@@ -16,12 +16,7 @@ defmodule MarkovTweets do
 
   def generate do
     tweet = MarkovTweets.Chain.generate
-
-    # Task.async(fn ->
-    #   System.cmd "say", ["-v", "Alex", to_string(tweet)]
-    # end)
-
-    IO.puts tweet
+    IO.puts(tweet)
   end
 
 end

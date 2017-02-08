@@ -1,48 +1,15 @@
 defmodule MarkovTweets.Chain do
-  use GenServer
 
+  alias MarkovTweets.Source
   alias MarkovTweets.Splitter
-  alias MarkovTweets.Generator
 
   @order 2
 
-  #######
-  # API #
-  #######
-
-  def start_link do
-    GenServer.start_link(__MODULE__, @order, name: __MODULE__)
+  def create(order \\ @order) do
+    Source.get
+    |> Stream.map(&create_subchain(&1, order))
+    |> merge
   end
-
-  def generate do
-    GenServer.call(__MODULE__, :generate)
-  end
-
-  #############
-  # Callbacks #
-  #############
-
-  def init(order) do
-    source = File.stream!("./dumps/realdonaldtrump.csv")
-             |> CSV.decode(headers: true, strip_cells: true)
-             |> Stream.filter(fn %{"is_retweet" => is_retweet} -> is_retweet == "False" end)
-             |> Stream.map(fn %{"text" => text} -> text end)
-
-    chain = source
-            |> Stream.map(&create_subchain(&1, order))
-            |> merge
-
-    {:ok, chain}
-  end
-
-  def handle_call(:generate, _from, chain) do
-    tweet = Generator.built(chain)
-    {:reply, tweet, chain}
-  end
-
-  ###########
-  # PRIVATE #
-  ###########
 
   defp create_subchain(tweet, order) do
     tweet

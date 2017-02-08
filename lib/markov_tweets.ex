@@ -7,16 +7,15 @@ defmodule MarkovTweets do
     import Supervisor.Spec, warn: false
 
     children = [
-       worker(MarkovTweets.Chain, []),
+      worker(MarkovTweets.Worker, []),
     ]
 
     opts = [strategy: :one_for_one, name: MarkovTweets.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
-  def generate do
-    tweet = MarkovTweets.Chain.generate
-    IO.puts(tweet)
+  def tweet do
+    IO.puts MarkovTweets.Worker.tweet()
   end
 
 end

@@ -53,7 +53,7 @@ defmodule MarkovTweetsTest do
               {@ping} => [@pong, @pong],
               {@pong} => [@ping, :end]}
 
-    assert Chain.generate("ping pong ping pong", 1) == chain
+    assert Chain.create(["ping pong ping pong"], 1) == chain
   end
 
   test "it creates a markov chain of order 2" do
@@ -61,16 +61,16 @@ defmodule MarkovTweetsTest do
               {@ping, @pong} => [@pong, @ping, @ping],
               {@pong, @ping} => [@pong, @pong, :end],
               {@pong, @pong} => [@ping]}
-    assert Chain.generate("ping pong pong ping pong ping pong ping", 2) == chain
+    assert Chain.create(["ping pong pong ping pong ping pong ping"], 2) == chain
   end
 
   test "it creates a markov chain of order 4" do
-    str = "ping pong ping pong ping pong ping pong ping pong ping pong ping pong"
+    str = ["ping pong ping pong ping pong ping pong ping pong ping pong ping pong"]
     chain = %{{:begin, @ping, @pong, @ping} => [@pong],
               {@ping, @pong, @ping, @pong} => [@ping, @ping, @ping, @ping, @ping, :end],
               {@pong, @ping, @pong, @ping} => [@pong, @pong, @pong, @pong, @pong]}
 
-    assert Chain.generate(str, 4) == chain
+    assert Chain.create(str, 4) == chain
   end
 
 end

@@ -1,7 +1,7 @@
 defmodule MarkovTweets.Generator do
 
   @max_char_count 140
-  @punctuation [?., ?,, ?!, ??, ?:]
+  @punctuation [?., ?,, ?!, ??, ?:, ?-]
 
   def built(chain) do
     start_seq = chain
@@ -17,6 +17,9 @@ defmodule MarkovTweets.Generator do
   end
 
   def built(chain, _, _, char_count) when char_count > @max_char_count do
+    built(chain)
+  end
+  def built(chain, _, acc, _) when (acc |> hd |> hd) == "@" do
     built(chain)
   end
   def built(chain, seq, acc, char_count) do
@@ -37,7 +40,7 @@ defmodule MarkovTweets.Generator do
     end
   end
 
-  defp prepend_space([<< t::utf8 >>] = term) when t in @punctuation do
+  defp prepend_space([<< t >>] = term) when t in @punctuation do
     [term]
   end
   defp prepend_space(term) do

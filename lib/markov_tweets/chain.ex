@@ -25,9 +25,7 @@ defmodule MarkovTweets.Chain do
   def init(order) do
     source = File.stream!("./dumps/realdonaldtrump.csv")
              |> CSV.decode(headers: true, strip_cells: true)
-             |> Stream.filter(fn %{"text" => text, "is_retweet" => is_retweet} ->
-               is_retweet == "False" && !String.match?(text, ~r/^"?@/)
-             end)
+             |> Stream.filter(fn %{"is_retweet" => is_retweet} -> is_retweet == "False" end)
              |> Stream.map(fn %{"text" => text} -> text end)
 
     chain = source

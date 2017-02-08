@@ -1,7 +1,7 @@
 defmodule MarkovTweets.Generator do
 
   @max_char_count 140
-  @punctuation [?., ?,, ?!, ??, ?:, ?-]
+  @punctuation [?., ?,, ?!, ??, ?:]
 
   def built(chain) do
     start_seq = chain
@@ -28,6 +28,7 @@ defmodule MarkovTweets.Generator do
         acc
         |> List.flatten
         |> Enum.filter(&String.valid?/1)
+        |> List.delete_at(-1)
       edges ->
         term = Enum.random(edges)
         new_seq = seq
@@ -48,9 +49,7 @@ defmodule MarkovTweets.Generator do
   end
 
   defp count_chars(io_list) do
-    io_list
-    |> List.flatten
-    |> Enum.count
+    io_list |> List.flatten |> Enum.count
   end
 
 end

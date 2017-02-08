@@ -14,8 +14,8 @@ defmodule MarkovTweets do
     Supervisor.start_link(children, opts)
   end
 
-  def tweet do
-    IO.puts MarkovTweets.Worker.tweet()
+  def generate do
+    to_string MarkovTweets.Worker.generate()
   end
 
 end

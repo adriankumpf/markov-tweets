@@ -1,6 +1,6 @@
 defmodule MarkovTweets.Splitter do
 
-  @url_placeholder ~w( h t t p : / / s o m e . l i n k )
+  @url_placeholder ~w(h t t p : / / s o m e . l i n k)
   @punctuation [?., ?,, ?!, ??, ?:]
   @empty_word []
   @remove [?", ?(, ?)]
@@ -18,16 +18,10 @@ defmodule MarkovTweets.Splitter do
     tokenize(rest, word,  acc)
   end
   def tokenize(<< p  >>, word, acc) when p in @punctuation do
-    tokenize("", [<< p >>], add_word(acc, word))
+    tokenize("", [<< p >>], acc ++ [word])
   end
   def tokenize(<< ?\s, rest::binary >>, word, acc) do
-    tokenize(rest, @empty_word, add_word(acc, word))
-  end
-  def tokenize(<< ?\n, rest::binary >>, word, acc) do
-    tokenize(rest, @empty_word, add_word(acc, word))
-  end
-  def tokenize(<< "&amp;", rest::binary >>, word, acc) do
-    tokenize(rest, word ++ ["&"], acc)
+    tokenize(rest, @empty_word, acc ++ [word])
   end
   def tokenize(<< "http", rest::binary >>, @empty_word, acc) do
     tokenize(rest, @url_placeholder, acc)
@@ -39,10 +33,7 @@ defmodule MarkovTweets.Splitter do
     tokenize(rest, word ++ [<< c >>], acc)
   end
   def tokenize(<< >>, word, acc) do
-    [:begin] ++ add_word(acc, word) ++ [:end]
+    [:begin] ++ acc ++ [word] ++ [:end]
   end
-
-  def add_word(acc, @empty_word), do: acc
-  def add_word(acc, word), do: acc ++ [word]
 
 end

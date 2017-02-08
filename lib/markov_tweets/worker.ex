@@ -12,7 +12,7 @@ defmodule MarkovTweets.Worker do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
-  def tweet do
+  def generate do
     GenServer.call(__MODULE__, :generate_tweet)
   end
 
@@ -21,7 +21,11 @@ defmodule MarkovTweets.Worker do
   #############
 
   def init(:ok) do
-    {:ok, Chain.create()}
+    chain = "./dumps/realdonaldtrump.txt"
+            |> File.stream!
+            |> Chain.create
+
+    {:ok, chain}
   end
 
   def handle_call(:generate_tweet, _, chain) do

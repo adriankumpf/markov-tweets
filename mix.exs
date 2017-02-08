@@ -11,13 +11,13 @@ defmodule MarkovTweets.Mixfile do
   end
 
   def application do
-    [extra_applications: [:logger],
-     mod: {MarkovTweets, []}]
+    [
+      extra_applications: [:logger],
+      mod: {MarkovTweets, []}
+    ]
   end
 
   defp deps do
-    [
-      {:csv, "~> 1.4.2"}
-    ]
+    []
   end
 end

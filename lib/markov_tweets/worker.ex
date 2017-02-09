@@ -29,7 +29,7 @@ defmodule MarkovTweets.Worker do
   end
 
   def handle_call(:generate_tweet, _, chain) do
-    {:reply, Generator.built(chain), chain}
+    {:reply, Generator.start(chain), chain}
   end
 
 end

@@ -3,7 +3,7 @@ defmodule MarkovTweets.Generator do
   @max_char_count 140
   @punctuation [?., ?,, ?!, ??, ?:]
 
-  def built(chain) do
+  def start(chain) do
     start_seq = chain
                 |> Map.keys
                 |> Enum.filter(&(elem(&1, 0) === :begin))
@@ -13,43 +13,53 @@ defmodule MarkovTweets.Generator do
                 |> Tuple.to_list
     char_count = count_chars(start_acc)
 
-    built(chain, start_seq, start_acc, char_count)
+    start(chain, start_seq, start_acc, char_count)
   end
 
-  def built(chain, _, _, char_count) when char_count > @max_char_count do
-    built(chain)
+  def start(chain, _, _, char_count) when char_count > @max_char_count do
+    start(chain)
   end
-  def built(chain, _, acc, _) when (acc |> hd |> hd) == "@" do
-    built(chain)
+  def start(chain, _, acc, _) when (acc |> hd |> hd) == "@" do
+    start(chain)
   end
-  def built(chain, seq, acc, char_count) do
+  def start(chain, seq, acc, char_count) do
     case chain[seq] do
       nil ->
-        acc
-        |> List.flatten
-        |> Enum.filter(&String.valid?/1)
-        |> List.delete_at(-1)
+        remove_end_token(acc)
       edges ->
         term = Enum.random(edges)
-        new_seq = seq
-                  |> Tuple.delete_at(0)
-                  |> Tuple.append(term)
-        new_acc = acc ++ prepend_space(term)
+        new_seq = shift(seq, term)
+        new_acc = concat(acc, term)
         char_count = count_chars(new_acc)
 
-        built(chain, new_seq, new_acc, char_count)
+        start(chain, new_seq, new_acc, char_count)
     end
   end
 
-  defp prepend_space([<< t >>] = term) when t in @punctuation do
-    [term]
+  defp shift(seq, term) do
+    seq
+    |> Tuple.delete_at(0)
+    |> Tuple.append(term)
   end
-  defp prepend_space(term) do
-    [[" "], term]
+
+  defp concat(acc, [<< t >>] = term) when t in @punctuation do
+    acc ++ [term]
+  end
+  defp concat(acc, term) do
+    acc ++ [[" "], term]
   end
 
   defp count_chars(io_list) do
-    io_list |> List.flatten |> Enum.count
+    io_list
+    |> List.flatten
+    |> Enum.count
+  end
+
+  defp remove_end_token(io_list) do
+    io_list
+    |> List.flatten
+    |> Enum.filter(&String.valid?/1)
+    |> List.delete_at(-1) # remove space at the end
   end
 
 end

@@ -1,6 +1,6 @@
 # MarkovTweets
 
-This project uses a Markov chain to generate nonsensical tweets from tweet dumps.
+Generate Donald Trump tweets using a Markov Chain.
 
 ```elixir
 iex(1)> MarkovTweets.generate
@@ -24,5 +24,3 @@ iex(9)> MarkovTweets.generate
 iex(10)> MarkovTweets.generate
 "Concentration is a total pro!"
 ```
-
-

@@ -26,6 +26,14 @@ defmodule MarkovTweets.Splitter do
     tokenize(rest, @empty_word, acc ++ [word])
   end
 
+  def tokenize(<<"&amp;", rest::binary>>, word, acc) do
+    tokenize(rest, word ++ ['&'], acc)
+  end
+
+  def tokenize(<<"https", rest::binary>>, @empty_word, acc) do
+    tokenize(rest, @url_placeholder, acc)
+  end
+
   def tokenize(<<"http", rest::binary>>, @empty_word, acc) do
     tokenize(rest, @url_placeholder, acc)
   end

@@ -21,6 +21,10 @@ defmodule MarkovTweets.Mixfile do
   end
 
   defp deps do
-    []
+    [{:httpoison, "~> 1.4"}, {:jason, "~> 1.1"}]
+  end
+
+  defp aliases do
+    [test: "test --no-start"]
   end
 end

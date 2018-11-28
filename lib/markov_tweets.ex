@@ -1,21 +1,17 @@
 defmodule MarkovTweets do
-  @moduledoc false
-
   use Application
 
-  def start(_type, _args) do
-    import Supervisor.Spec, warn: false
+  alias __MODULE__.Worker
 
+  def start(_type, _args) do
     children = [
-      worker(MarkovTweets.Worker, []),
+      Worker
     ]
 
-    opts = [strategy: :one_for_one, name: MarkovTweets.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(children, strategy: :one_for_one, name: MarkovTweets.Supervisor)
   end
 
   def generate do
-    to_string MarkovTweets.Worker.generate()
+    Worker.generate() |> to_string()
   end
-
 end
